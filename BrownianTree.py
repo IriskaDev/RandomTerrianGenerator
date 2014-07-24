@@ -15,7 +15,7 @@ class BrownianTree(object):
 		cls.width, cls.height, cls.seed_pos = width, height, seed_pos
 		for i in seed_pos:
 			cls.map[i[0]][i[1]] = 1
-		cls.walker_dir = [[i-1, j-1] for i in range(3) for j in range(3) if i-1 != 0 and j-1 != 0]
+		cls.walker_dir = [[i-1, j-1] for i in range(3) for j in range(3) if i-1 != 0 or j-1 != 0]
 
 
 	def generate_tree(cls, particles, start_pos_list=[]):
@@ -72,10 +72,10 @@ class BrownianTree(object):
 
 if __name__ == '__main__':
 	width, height = 30, 30
-	brownian_tree = BrownianTree(width, height, [[width/2, height/2]])
+	brownian_tree = BrownianTree(width, height, [[width/2, height/2], [10, 10], [20, 20]])
 	border = [[i, 0] for i in range(width)]
 	border.extend([[0, i] for i in range(height)])
 	border.extend([[width-1, i] for i in range(height)])
 	border.extend([[i, height-1] for i in range(width)])
-	brownian_tree.generate_tree(100, border)
+	brownian_tree.generate_tree(300, border)
 	brownian_tree.print_map()

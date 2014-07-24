@@ -19,16 +19,7 @@ class ParticleSedimetary:
 		self.normal_buffer = []
 		self.color_buffer = []
 		self.face_normal = []
-		self.walker_direction = [
-			[1, 0],
-			[1, 1],
-			[0, 1],
-			[-1, 1],
-			[-1, 0],
-			[-1, -1],
-			[0, -1],
-			[1, -1]
-		]
+		self.walker_direction = [[i-1, j-1] for i in range(3) for j in range(3) if i-1 != 0 or j-1 != 0]
 		self.walker_start_pos = [0, 0]
 		for i in range(width):
 			self.point_matrix.append([])
@@ -36,21 +27,6 @@ class ParticleSedimetary:
 				self.point_matrix[i].append([float(i), float(j), 0.0])
 
 	
-	def random_drop(self, p_cnt, rand_func=random.random):
-		'''
-			drop particles in the field randomly.
-		'''
-		for i in range(p_cnt):
-			#self.search_radius = 2 + random.random() * 3
-			#self.particle_height = random.random() * 0.8
-			#self.altitude_threshold = random.random() * 0.8
-			p_x = int(rand_func()*self.width)
-			p_y = int(rand_func()*self.length)
-			center = list(self.point_matrix[p_x][p_y])
-			drop_position = self.search_ava_position(center)
-			self.point_matrix[drop_position[0]][drop_position[1]][2] += self.particle_height
-
-
 	def walker(self, steps):
 		'''
 			walk throught the field and drop particles.
@@ -298,40 +274,3 @@ class ParticleSedimetary:
 		file_handler.write('}')
 		file_handler.close()
 
-
-
-
-	def search_ava_position_noniter(self, center):
-		'''
-			search apposite for particle, one particle only search once.
-		'''
-		sr = self.search_radius
-		center = [int(center[0]), int(center[1]), center[2]]
-		center_cpy = list(center)
-		dir_arr = [[0, -1], [1, 0], [0, 1], [-1,0]]
-		cur_dir = int(random.random()*4)
-		dir_change_mark = 0
-		step_length = 0
-		cur_p = [center[0], center[1]]
-		center_altitude = center[2]
-		min_x, max_x = center[0] - sr, center[0] + sr
-		min_y, max_y = center[1] - sr, center[1] + sr
-		while step_length <= self.search_radius*2:
-			#direction have to change every time
-			cur_dir = (cur_dir + 1) % 4
-			if dir_change_mark % 2 == 0:
-				step_length += 1
-			for i in range(step_length):
-				cur_p = vector.vector_plus(cur_p, dir_arr[cur_dir])
-				if cur_p[0] < 0 or cur_p[0] >= self.width:
-					continue
-				if cur_p[1] < 0 or cur_p[1] >= self.length:
-					continue
-				if vector.vector_distance_of(cur_p, [center[0], center[1]]) >= self.search_radius:
-					continue
-				if self.point_matrix[cur_p[0]][cur_p[1]][2] <= center[2] - self.altitude_threshold:
-					return cur_p
-
-			dir_change_mark += 1
-
-		return center

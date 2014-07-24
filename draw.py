@@ -21,7 +21,6 @@ p = ParticleSedimetary(width, length, 20)
 p.search_radius = 2
 p.altitude_threshold = 0.3
 p.particle_height = 0.3
-#p.field_walker(30000)
 p.walker_start_pos = [int(width/2), int(length/2)]
 p.walker(50000)
 v = p.get_vertex_buffer()
